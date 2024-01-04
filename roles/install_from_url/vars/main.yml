@@ -1,0 +1,2 @@
+---
+root_group: "{{ 'wheel' if ansible_facts['os_family'] == 'OpenBSD' or ansible_facts['os_family'] == 'FreeBSD' else 'root' }}"

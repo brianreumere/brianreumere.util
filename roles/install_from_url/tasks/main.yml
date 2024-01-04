@@ -1,0 +1,161 @@
+---
+- name: Create custom facts directory
+  ansible.builtin.file:
+    path: /etc/ansible/facts.d
+    owner: root
+    group: "{{ root_group }}"
+    mode: '0700'
+    state: directory
+
+- name: "Determine whether install needs to run for {{ [name, version].join(' ') }}"
+  ansible.builtin.set_fact:
+    perform_install: true
+  when: |
+    (
+      ansible_local['install-from-url'][name]['installed'] is undefined
+      or not ansible_local['install-from-url'][name]['installed']
+      or ansible_local['install-from-url'][name]['version'] is undefined
+      or ansible_local['install-from-url'][name]['version'] != version
+    )
+    or force_install
+
+- name: Confirm files and directories created by installation exist
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  register: installed_files
+  loop: "{{ creates }}"
+  when: perform_install is undefined or not perform_install
+
+- name: Check files
+  ansible.builtin.set_fact:
+    perform_install: true
+  when:
+    - installed_files is not skipped
+    - installed_files.results | community.general.json_query('[*].exists') is ansible.builtin.any
+
+- name: Create temporary directory for install
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: "{{ name }}_install"
+  register: install_dir
+  when: perform_install is not undefined and perform_install
+
+- name: Download
+  ansible.builtin.get_url:
+    url: "{{ download_url }}"
+    dest: "{{ install_dir.path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: '0644'
+    checksum: "{{ checksum }}"
+  register: downloaded
+  when: perform_install is not undefined and perform_install
+
+- name: Unarchive download (using unarchive module)
+  ansible.builtin.unarchive:
+    remote_src: true
+    src: "{{ downloaded.dest }}"
+    dest: "{{ install_dir.path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: '0755'
+    list_files: true
+  register: unarchived_module
+  when:
+    - perform_install is not undefined
+    - perform_install
+    - unarchive
+    - ansible_facts['os_family'] != 'OpenBSD'
+    - ansible_facts['os_family'] != 'FreeBSD'
+
+- name: Get file list from unarchive module
+  ansible.builtin.set_fact:
+    unarchived_lines: "{{ unarchived_module.files }}"
+  when: unarchived_module is not skipped and unarchived_module is succeeded
+
+- name: Unarchive download (using shell module)
+  ansible.builtin.shell:
+    chdir: "{{ install_dir.path }}"
+    cmd: |
+      if [ {{ downloaded.dest | quote }} = *.zip ]; then
+        unzip -Z1 {{ downloaded.dest | quote }}
+        unzip -q {{ downloaded.dest | quote }}
+      else
+        tar xzvf {{ downloaded.dest | quote }}
+      fi
+  register: unarchived_shell
+  changed_when: unarchived_shell.rc == 0
+  when:
+    - perform_install is not undefined
+    - perform_install
+    - unarchive
+    - |
+      ansible_facts['os_family'] == 'OpenBSD'
+      or ansible_facts['os_family'] == 'FreeBSD'
+
+- name: Get file list from unarchive shell command
+  ansible.builtin.set_fact:
+    unarchived_lines: "{{ unarchived_shell.stdout_lines }}"
+  when: unarchived_shell is not skipped and unarchived_shell is succeeded
+
+- name: Check if unarchiving created a parent directory
+  ansible.builtin.stat:
+    path: "{{ install_dir.path }}/{{ unarchived_lines[0] }}"
+  register: unarchive_parent_dir
+  when: |
+    (unarchived_module is not skipped and unarchived_module is succeeded)
+    or (unarchived_shell is not skipped and unarchived_shell is succeeded)
+
+- name: Set directory to install from to unarchived directory
+  ansible.builtin.set_fact:
+    install_chdir: "{{ install_dir.path }}/{{ unarchived_lines[0] }}"
+  when:
+    - perform_install is not undefined
+    - perform_install
+    - unarchive
+    - unarchive_parent_dir is not skipped
+    - unarchive_parent_dir.stat.isdir
+
+- name: Set directory to install from to download directory
+  ansible.builtin.set_fact:
+    install_chdir: "{{ install_dir.path }}"
+  when:
+    - perform_install is not undefined
+    - perform_install
+    - |
+      not unarchive
+      or (
+        unarchive
+        unarchive_parent_dir is not skipped
+        and not unarchive_parent_dir.stat.isdir
+      )
+
+- name: Install {{ name }}  # noqa: command-instead-of-shell
+  ansible.builtin.shell:
+    chdir: "{{ install_chdir }}"
+    cmd: "{{ install_cmd }}"
+  register: installed
+  changed_when: installed.rc == 0
+  when: perform_install is not undefined and perform_install
+
+- name: Register installation fact for {{ [name, version].join(' ') }}
+  community.general.ini_file:
+    dest: /etc/ansible/facts.d/install-from-url.fact
+    owner: root
+    group: "{{ root_group }}"
+    mode: '0600'
+    section: "{{ name }}"
+    option: installed
+    value: "True"
+  when: installed is not skipped and installed is succeeded
+
+- name: Register version fact {{ [name, version].join(' ') }}
+  community.general.ini_file:
+    dest: /etc/ansible/facts.d/install-from-url.fact
+    owner: root
+    group: "{{ root_group }}"
+    mode: '0600'
+    section: "{{ name }}"
+    option: version
+    value: "{{ version }}"
+  when: installed is not skipped and installed is succeeded
