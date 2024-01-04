@@ -126,7 +126,7 @@
       not unarchive
       or (
         unarchive
-        unarchive_parent_dir is not skipped
+        and unarchive_parent_dir is not skipped
         and not unarchive_parent_dir.stat.isdir
       )
 
