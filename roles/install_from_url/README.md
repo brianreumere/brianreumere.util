@@ -22,19 +22,13 @@ Downloads a file from a given URL, unarchives it, and runs a set of install comm
 
 ## Example
 
-Install the role:
-
-```sh
-ansible-galaxy role install brianreumere.install_from_url
-```
-
-Use the role:
+Assuming you've installed the collection, you can use the role like this:
 
 ```yaml
 ---
 - name: Install acme.sh
   ansible.builtin.include_role:
-    name: brianreumere.install_from_url
+    name: brianreumere.util.install_from_url
   vars:
     name: acme.sh
     version: 3.0.7
