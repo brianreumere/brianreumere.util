@@ -15,9 +15,9 @@ jobs:
       - name: Get version from Git tag
         id: ref
         run: |
-          type=$(printf "%s" "GITHUB_REF" | cut -d '/' -f 2)
+          type=$(printf "%s" "$GITHUB_REF" | cut -d '/' -f 2)
           if [ "$type" = "tags" ]; then
-            tag=$(printf "%s" "GITHUB_REF" | cut -d '/' -f 3)
+            tag=$(printf "%s" "$GITHUB_REF" | cut -d '/' -f 3)
             version=$(printf "%s" "$tag" | tr -d 'v')
             if ! printf "%s" "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
               printf "Version %s is invalid\\n"
