@@ -12,10 +12,10 @@
     perform_install: true
   when: |
     (
-      ansible_local['install-from-url'][name]['installed'] is undefined
-      or not ansible_local['install-from-url'][name]['installed']
-      or ansible_local['install-from-url'][name]['version'] is undefined
-      or ansible_local['install-from-url'][name]['version'] != version
+      ansible_local['install_from_url'][name]['installed'] is undefined
+      or not ansible_local['install_from_url'][name]['installed']
+      or ansible_local['install_from_url'][name]['version'] is undefined
+      or ansible_local['install_from_url'][name]['version'] != version
     )
     or force_install
 
@@ -140,7 +140,7 @@
 
 - name: Register installation fact for {{ [name, version].join(' ') }}
   community.general.ini_file:
-    dest: /etc/ansible/facts.d/install-from-url.fact
+    dest: /etc/ansible/facts.d/install_from_url.fact
     owner: root
     group: "{{ root_group }}"
     mode: '0600'
@@ -151,7 +151,7 @@
 
 - name: Register version fact {{ [name, version].join(' ') }}
   community.general.ini_file:
-    dest: /etc/ansible/facts.d/install-from-url.fact
+    dest: /etc/ansible/facts.d/install_from_url.fact
     owner: root
     group: "{{ root_group }}"
     mode: '0600'
