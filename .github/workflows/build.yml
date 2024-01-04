@@ -36,12 +36,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install Ansible and dependencies
+        run: pip install ansible pyyaml
       - name: Populate collection version
         run: python galaxy.py
         env:
           GALAXY_VERSION: steps.ref.outputs.version
-      - name: Install Ansible
-        run: pip install ansible
       - name: Configure Ansible
         run: printf "[galaxy]\\nserver_list = release\\n\\n[galaxy_server.release]\\nurl = https://galaxy.ansible.com/api/\\ntoken = \"$GALAXY_TOKEN\"\\n" > "${HOME}/.ansible.cfg"
         env:
