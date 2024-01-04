@@ -6,4 +6,4 @@ name: util
 namespace: brianreumere
 readme: README.md
 repository: https://github.com/brianreumere/brianreumere.util
-version: 10.0.0
+version: false
