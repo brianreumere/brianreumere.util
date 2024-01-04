@@ -35,7 +35,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Populate collection version
-        run: python galaxy.py
+        run: |
+          ls -lah
+          ls -lah "$GITHUB_WORKSPACE"
+          python galaxy.py
         env:
           GALAXY_VERSION: steps.ref.outputs.version
       - name: Install Ansible
