@@ -1,9 +1,9 @@
----
-namespace: brianreumere
-name: util
-version: 0.0.1
-readme: README.md
 authors:
-  - Brian Reumere <brian@mutualaid.info>
+- Brian Reumere <brian@mutualaid.info>
 license:
-  - ISC
+- ISC
+name: util
+namespace: brianreumere
+readme: README.md
+repository: https://github.com/brianreumere/brianreumere.util
+version: 10.0.0
