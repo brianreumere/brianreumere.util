@@ -41,7 +41,7 @@ jobs:
       - name: Populate collection version
         run: python galaxy.py
         env:
-          GALAXY_VERSION: steps.ref.outputs.version
+          GALAXY_VERSION: ${{ steps.ref.outputs.version }}
       - name: Configure Ansible
         run: printf "[galaxy]\\nserver_list = release\\n\\n[galaxy_server.release]\\nurl = https://galaxy.ansible.com/api/\\ntoken = \"$GALAXY_TOKEN\"\\n" > "${HOME}/.ansible.cfg"
         env:
@@ -51,4 +51,4 @@ jobs:
       - name: Publish collection
         run: ansible-galaxy collection publish *"$GALAXY_VERSION".tar.gz
         env:
-          GALAXY_VERSION: steps.ref.outputs.version
+          GALAXY_VERSION: ${{ steps.ref.outputs.version }}
