@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: /etc/ansible/facts.d
     owner: root
-    group: "{{ root_group }}"
+    group: "{{ install_from_url_root_group }}"
     mode: '0700'
     state: directory
 
@@ -45,7 +45,7 @@
     url: "{{ install_from_url_download_url }}"
     dest: "{{ install_dir.path }}"
     owner: root
-    group: "{{ root_group }}"
+    group: "{{ install_from_url_root_group }}"
     mode: '0644'
     checksum: "{{ install_from_url_checksum }}"
   register: downloaded
@@ -57,7 +57,7 @@
     src: "{{ downloaded.dest }}"
     dest: "{{ install_dir.path }}"
     owner: root
-    group: "{{ root_group }}"
+    group: "{{ install_from_url_root_group }}"
     mode: '0755'
     list_files: true
   register: unarchived_module
@@ -142,7 +142,7 @@
   community.general.ini_file:
     dest: /etc/ansible/facts.d/install_from_url.fact
     owner: root
-    group: "{{ root_group }}"
+    group: "{{ install_from_url_root_group }}"
     mode: '0600'
     section: "{{ install_from_url_name }}"
     option: installed
@@ -153,7 +153,7 @@
   community.general.ini_file:
     dest: /etc/ansible/facts.d/install_from_url.fact
     owner: root
-    group: "{{ root_group }}"
+    group: "{{ install_from_url_root_group }}"
     mode: '0600'
     section: "{{ install_from_url_name }}"
     option: version

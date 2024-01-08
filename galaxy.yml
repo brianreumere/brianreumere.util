@@ -1,10 +1,14 @@
+---
 namespace: brianreumere
 name: util
-version: false
+version: 1.0.0  # This will be replaced by the build workflow
 readme: README.md
 authors:
   - Brian Reumere <brian@mutualaid.info>
 description: Ansible collection for utility functions
 license:
   - ISC
+tags:
+  - linux
+  - tools
 repository: https://github.com/brianreumere/brianreumere.util

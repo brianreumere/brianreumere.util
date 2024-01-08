@@ -1,2 +1,2 @@
 ---
-root_group: "{{ 'wheel' if ansible_facts['os_family'] == 'OpenBSD' or ansible_facts['os_family'] == 'FreeBSD' else 'root' }}"
+install_from_url_root_group: "{{ 'wheel' if ansible_facts['os_family'] == 'OpenBSD' or ansible_facts['os_family'] == 'FreeBSD' else 'root' }}"

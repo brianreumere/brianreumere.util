@@ -3,7 +3,9 @@ dependencies: []
 galaxy_info:
   role_name: install_from_url
   description: Install something from a URL
-  min_ansible_version: '2.12'
+  author: Brian Reumere <brian@mutualaid.info>
+  license: ISC
+  min_ansible_version: '2.15'
   platforms:
     - name: EL
       versions:
