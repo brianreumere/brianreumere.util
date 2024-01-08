@@ -133,7 +133,7 @@
 - name: Install {{ install_from_url_name }}  # noqa: command-instead-of-shell
   ansible.builtin.shell:
     chdir: "{{ install_chdir }}"
-    cmd: "{{ install_cmd }}"
+    cmd: "{{ install_from_url_install_cmd }}"
   register: installed
   changed_when: installed.rc == 0
   when: perform_install is not undefined and perform_install
