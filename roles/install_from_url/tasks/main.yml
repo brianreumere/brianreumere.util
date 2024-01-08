@@ -54,7 +54,7 @@
 - name: Unarchive download (using unarchive module)
   ansible.builtin.unarchive:
     remote_src: true
-    src: "{{ install_from_url_downloaded.dest }}"
+    src: "{{ downloaded.dest }}"
     dest: "{{ install_dir.path }}"
     owner: root
     group: "{{ root_group }}"
