@@ -43,7 +43,7 @@
 - name: Download
   ansible.builtin.get_url:
     url: "{{ install_from_url_download_url }}"
-    dest: "{{ install_from_url_install_dir.path }}"
+    dest: "{{ install_dir.path }}"
     owner: root
     group: "{{ root_group }}"
     mode: '0644'
@@ -55,7 +55,7 @@
   ansible.builtin.unarchive:
     remote_src: true
     src: "{{ install_from_url_downloaded.dest }}"
-    dest: "{{ install_from_url_install_dir.path }}"
+    dest: "{{ install_dir.path }}"
     owner: root
     group: "{{ root_group }}"
     mode: '0755'
@@ -75,7 +75,7 @@
 
 - name: Unarchive download (using shell module)
   ansible.builtin.shell:
-    chdir: "{{ install_from_url_install_dir.path }}"
+    chdir: "{{ install_dir.path }}"
     cmd: |
       if [ {{ downloaded.dest | quote }} = *.zip ]; then
         unzip -Z1 {{ downloaded.dest | quote }}
@@ -100,7 +100,7 @@
 
 - name: Check if unarchiving created a parent directory
   ansible.builtin.stat:
-    path: "{{ install_from_url_install_dir.path }}/{{ unarchived_lines[0] }}"
+    path: "{{ install_dir.path }}/{{ unarchived_lines[0] }}"
   register: unarchive_parent_dir
   when: |
     (unarchived_module is not skipped and unarchived_module is succeeded)
@@ -108,7 +108,7 @@
 
 - name: Set directory to install from to unarchived directory
   ansible.builtin.set_fact:
-    install_chdir: "{{ install_from_url_install_dir.path }}/{{ unarchived_lines[0] }}"
+    install_chdir: "{{ install_dir.path }}/{{ unarchived_lines[0] }}"
   when:
     - perform_install is not undefined
     - perform_install
@@ -118,7 +118,7 @@
 
 - name: Set directory to install from to download directory
   ansible.builtin.set_fact:
-    install_chdir: "{{ install_from_url_install_dir.path }}"
+    install_chdir: "{{ install_dir.path }}"
   when:
     - perform_install is not undefined
     - perform_install
