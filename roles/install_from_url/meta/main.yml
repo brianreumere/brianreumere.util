@@ -7,18 +7,9 @@ galaxy_info:
   license: ISC
   min_ansible_version: '2.15'
   platforms:
-    - name: EL
-      versions:
-        - all
-    - name: Ubuntu
-      versions:
-        - all
     - name: GenericLinux
       versions:
         - all
-    - name: OpenBSD
-      versions:
-        - all
-    - name: FreeBSD
+    - name: GenericBSD
       versions:
         - all
