@@ -15,7 +15,7 @@
       ansible_local['install_from_url'][install_from_url_name]['installed'] is undefined
       or not ansible_local['install_from_url'][install_from_url_name]['installed']
       or ansible_local['install_from_url'][install_from_url_name]['version'] is undefined
-      or ansible_local['install_from_url'][install_from_url_name]['version'] != version
+      or ansible_local['install_from_url'][install_from_url_name]['version'] != install_from_url_version
     )
     or force_install
 
