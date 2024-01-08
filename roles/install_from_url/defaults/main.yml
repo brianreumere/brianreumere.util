@@ -1,4 +1,4 @@
 ---
-unarchive: true
-creates: []
-force_install: false
+install_from_url_unarchive: true
+install_from_url_creates: []
+install_from_url_force_install: false
