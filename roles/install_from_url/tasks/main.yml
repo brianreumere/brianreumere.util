@@ -17,7 +17,7 @@
       or ansible_local['install_from_url'][install_from_url_name]['version'] is undefined
       or ansible_local['install_from_url'][install_from_url_name]['version'] != install_from_url_version
     )
-    or force_install
+    or install_from_url_force_install
 
 - name: Confirm files and directories created by installation exist
   ansible.builtin.stat:
