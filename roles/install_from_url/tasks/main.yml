@@ -126,8 +126,7 @@
       not install_from_url_unarchive
       or (
         install_from_url_unarchive
-        and unarchive_parent_dir is not skipped
-        and not unarchive_parent_dir.stat.isdir
+        and unarchive_parent_dir is skipped
       )
 
 - name: Install {{ install_from_url_name }}  # noqa: command-instead-of-shell
