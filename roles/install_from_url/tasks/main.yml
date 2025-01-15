@@ -103,7 +103,7 @@
     path: "{{ install_dir.path }}/{{ unarchived_lines[0] }}"
   register: unarchive_parent_dir
   when: |
-    (unarchived_module is not skipped and unarchived_module is succeeded and unarchived_lines | length > 1)
+    (unarchived_module is not skipped and unarchived_module is succeeded and unarchived_lines | length == 1)
     or (unarchived_shell is not skipped and unarchived_shell is succeeded)
 
 - name: Set directory to install from to unarchived directory
